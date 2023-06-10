@@ -19,19 +19,17 @@ public class BookService implements BookDao{
     private final BookRepository bookRepository;
 
     @Override
-    public Book create(Book book) throws BookAlreadyExistException{
+    public Book create(Book book) throws BookAlreadyExistException {
         String isbn = book.getIsbn();
-        List<Book> books = bookRepository.findAll();
-        for (Book boo : books) {
-            if (boo.getIsbn()==isbn) {
-                throw new BookAlreadyExistException("Book with ISBN " + isbn + " already exists");
-            }
-        }
+        Optional<Book> existingBook = bookRepository.findBookByIsbn(isbn);
+        if (existingBook.isPresent()) 
+            throw new BookAlreadyExistException("Book with ISBN " + isbn + " already exists");
+        
         return bookRepository.save(book);
     }
-    
+
     @Override
-    public List<Book> read() {
+    public List<Book> readAll() {
         return bookRepository.findAll();
     }
 
@@ -58,6 +56,17 @@ public class BookService implements BookDao{
         } else {
             throw new BookNotFoundException("Book not found with id: " + id);
         }
+    }
+
+    @Override
+    public Optional<Book> findBookByIsbn(String bookIsbn) {
+        return bookRepository.findBookByIsbn(bookIsbn);
+        
+    }
+
+    @Override
+    public Book read(Long bookId) {
+        return bookRepository.getReferenceById(bookId);
     }
     
 }

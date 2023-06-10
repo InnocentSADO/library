@@ -23,22 +23,30 @@ public class Controller {
     private final BookService bookService;
 
     @PostMapping("/create")
-    public Book create(@RequestBody Book book){
-        return bookService.create(book);
+    public String create(@RequestBody Book book){
+        bookService.create(book);
+        return "Book Created Successfully";
     }
 
     @GetMapping("/read")
     public List<Book> read(){
-        return bookService.read();
+        return bookService.readAll();
+    }
+
+    @GetMapping("/read/{id}")
+    public Book read(@PathVariable Long id){
+        return bookService.read(id);
     }
 
     @PutMapping("/update/{id}")
-    public Book update(@PathVariable Long id, @RequestBody Book book) {
-        return bookService.update(id, book);
+    public String update(@PathVariable Long id, @RequestBody Book book) {
+        bookService.update(id, book);
+        return "Book Updated Successfully";
     }
 
     @DeleteMapping("/delete")
     public String delete(@PathVariable Long id){
-        return bookService.delete(id);
+        bookService.delete(id);
+        return "Book Deleted Successfully";
     }
 }
